@@ -20,9 +20,11 @@ public class BlogPost {
     private Long id;
 
     @NotNull
+    @Column(nullable = false)
     private String title;
 
     @NotNull
+    @Column(nullable = false)
     private String body;
 
 
@@ -33,6 +35,13 @@ public class BlogPost {
     // max 5 categories
     // two BlogPosts can be equal even if their assigned categories don't match - not a big problem
     // necessary to implement EqualsAndHashcode, otherwise it's recursive
+    @ManyToMany
+    @JoinTable(
+            name = "blog_post_categories",
+            joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "blog_post_id", referencedColumnName = "id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"blog_post_id", "category_id"}) // -> | 1 | 2 | can't be twice
+    )
     private List<Category> categories;
 
     public void assignToCategory(Category category) throws TooManyCategoriesException {

@@ -29,5 +29,6 @@ public class Tag {
     // two Tags can be equal with different tagged categories - not a big problem
     // necessary to implement EqualsAndHashcode, otherwise it's recursive
     @NotNull
+    @ManyToMany(mappedBy = "tags")
     private List<Category> taggedCategories = new ArrayList<>();
 }
