@@ -1,6 +1,5 @@
 package com.autsoft.simpleblog.model;
 
-import com.autsoft.simpleblog.dto.BlogPostDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -49,6 +48,7 @@ public class BlogPost {
     @JsonManagedReference
     private Set<Category> categories = new HashSet<>();
 
+    // we know this problem can happen, so it shouldn't be handled by exceptions but returning true false seems worse..
     public void assignToCategory(final Category category) throws TooManyCategoriesException {
         if (categories.size() >= 5) {
             throw new TooManyCategoriesException();

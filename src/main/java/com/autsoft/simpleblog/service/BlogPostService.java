@@ -2,7 +2,6 @@ package com.autsoft.simpleblog.service;
 
 
 import com.autsoft.simpleblog.dto.BlogPostDTO;
-import com.autsoft.simpleblog.dto.DTOUtilities;
 import com.autsoft.simpleblog.model.BlogPost;
 import com.autsoft.simpleblog.model.Category;
 import com.autsoft.simpleblog.model.TooManyCategoriesException;
@@ -13,11 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Optional;
 
-import static com.autsoft.simpleblog.dto.DTOUtilities.*;
+import static com.autsoft.simpleblog.dto.DTOUtilities.blogPostFromDTOWithoutRelations;
+import static com.autsoft.simpleblog.dto.DTOUtilities.updateBlogPostWithDTO;
 
 @Service
 @Transactional
@@ -25,8 +24,8 @@ public class BlogPostService {
 
     private final Logger logger = LoggerFactory.getLogger(BlogPostService.class);
 
-    private BlogPostRepository blogPostRepository;
-    private CategoryRepository categoryRepository;
+    private final BlogPostRepository blogPostRepository;
+    private final CategoryRepository categoryRepository;
 
     public BlogPostService(final BlogPostRepository blogPostRepository,
                            final CategoryRepository categoryRepository) {
@@ -41,19 +40,21 @@ public class BlogPostService {
     }
 
     public BlogPost createBlogPost(final BlogPostDTO blogPostDTO) {
-        var blogPost = blogPostFromDTOWithoutRelations(blogPostDTO);
+        final var blogPost = blogPostFromDTOWithoutRelations(blogPostDTO);
         return blogPostRepository.save(blogPost);
     }
 
     public BlogPost saveBlogPost(final Long id, final BlogPostDTO blogPostDTO) {
-        var toModifyBlogPost = blogPostRepository.findById(id);
-        return toModifyBlogPost.map(blogPost -> blogPostRepository.save(blogPost))
-                .orElseGet(() -> createBlogPost(blogPostDTO));
+        final var toModifyBlogPost = blogPostRepository.findById(id);
+        return toModifyBlogPost.map(blogPost -> {
+            updateBlogPostWithDTO(blogPost, blogPostDTO);
+            return blogPostRepository.save(blogPost);
+        }).orElseGet(() -> createBlogPost(blogPostDTO));
     }
 
     public void deleteBlogPost(final Long id) {
-        var blogPost = blogPostRepository.findById(id);
-        blogPost.ifPresent(it -> blogPostRepository.delete(it));
+        blogPostRepository.findById(id)
+                .ifPresent(it -> blogPostRepository.delete(it));
     }
 
     public boolean existsById(final Long id) {
@@ -63,11 +64,11 @@ public class BlogPostService {
     // Functionality
     public Optional<BlogPost> assignCategoryToBlogPost(final Long blogPostId, final String categoryName)
             throws TooManyCategoriesException {
-        var optionalBlogPost = blogPostRepository.findById(blogPostId);
+        final var optionalBlogPost = blogPostRepository.findById(blogPostId);
         if (optionalBlogPost.isEmpty()) {
             return Optional.empty();
         }
-        var optionalCategory = categoryRepository.findByName(categoryName);
+        final var optionalCategory = categoryRepository.findByName(categoryName);
         if (optionalCategory.isEmpty()) {
             return Optional.empty();
         }
@@ -81,11 +82,11 @@ public class BlogPostService {
     }
 
     public Optional<BlogPost> removeBlogPostFromCategory(final Long blogPostId, final String categoryName) {
-        var optionalBlogPost = blogPostRepository.findById(blogPostId);
+        final var optionalBlogPost = blogPostRepository.findById(blogPostId);
         if (optionalBlogPost.isEmpty()) {
             return Optional.empty();
         }
-        var optionalCategory = categoryRepository.findByName(categoryName);
+        final var optionalCategory = categoryRepository.findByName(categoryName);
         if (optionalCategory.isEmpty()) {
             return Optional.empty();
         }

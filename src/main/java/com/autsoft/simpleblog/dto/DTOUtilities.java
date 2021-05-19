@@ -17,7 +17,7 @@ public final class DTOUtilities {
         return blogPost;
     }
 
-    public static void updateBlogPostWithDTO(final BlogPost blogPost, final BlogPostDTO blogPostDTO){
+    public static void updateBlogPostWithDTO(final BlogPost blogPost, final BlogPostDTO blogPostDTO) {
         blogPost.setTitle(blogPostDTO.getTitle());
         blogPost.setBody(blogPostDTO.getBody());
     }
@@ -30,4 +30,7 @@ public final class DTOUtilities {
         return category;
     }
 
+    public static void updateCategoryWithDTO(final Category category, final CategoryDTO categoryDTO) {
+        category.setName(categoryDTO.getName());
+    }
 }

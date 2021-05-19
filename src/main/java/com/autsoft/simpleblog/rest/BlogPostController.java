@@ -15,17 +15,11 @@ import java.net.URISyntaxException;
 @RestController("/api/blogPosts")
 public class BlogPostController {
 
-    private BlogPostService blogPostService;
+    private final BlogPostService blogPostService;
 
     public BlogPostController(final BlogPostService blogPostService) {
         this.blogPostService = blogPostService;
     }
-
-//    @ExceptionHandler({BlogPostNotFoundException.class, CategoryNotFoundException.class})
-//    public void handleNotFoundErrors(){
-//
-//    }
-
 
     // functionality
     @GetMapping("/search/{tag}")
@@ -35,14 +29,14 @@ public class BlogPostController {
 
     @PostMapping("/{id}/addCategory/{categoryName}")
     public ResponseEntity<BlogPost> addCategoryToBlogPost(@PathVariable final Long id, @PathVariable final String categoryName) {
-        BlogPost blogPost = null;
-        try{
+        BlogPost blogPost;
+        try {
             var optionalBlogPost = blogPostService.assignCategoryToBlogPost(id, categoryName);
-            if(optionalBlogPost.isEmpty()){
+            if (optionalBlogPost.isEmpty()) {
                 return ResponseEntity.notFound().build();
             }
             blogPost = optionalBlogPost.get();
-        }catch (TooManyCategoriesException ex){
+        } catch (TooManyCategoriesException ex) {
             // can I do this better?
             return ResponseEntity.badRequest().body(null);
         }
@@ -51,8 +45,8 @@ public class BlogPostController {
 
     @DeleteMapping("/{id}/removeCategory/{categoryName}")
     public ResponseEntity<BlogPost> removeCategoryFromBlogPost(@PathVariable final Long id, @PathVariable final String categoryName) {
-        var optionalBlogPost = blogPostService.removeBlogPostFromCategory(id, categoryName);
-        if(optionalBlogPost.isEmpty()){
+        final var optionalBlogPost = blogPostService.removeBlogPostFromCategory(id, categoryName);
+        if (optionalBlogPost.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(optionalBlogPost.get());
@@ -61,10 +55,10 @@ public class BlogPostController {
     // CRUD
     @GetMapping("/{id}")
     public ResponseEntity<BlogPost> getBlogPost(@PathVariable final Long id) {
-        var optionalBlogPost = blogPostService.getBlogPostById(id);
+        final var optionalBlogPost = blogPostService.getBlogPostById(id);
 
         // I'm used to kotlin ?. ?: syntax, so I use optional to not forget null checks
-        if(optionalBlogPost.isEmpty()){
+        if (optionalBlogPost.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 

@@ -15,7 +15,7 @@ import java.net.URISyntaxException;
 public class CategoryController {
 
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
 
     public CategoryController(final CategoryService categoryService) {
         this.categoryService = categoryService;
@@ -24,7 +24,7 @@ public class CategoryController {
     // CRUD
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable final Long id) {
-        var optionalCategory = categoryService.getCategoryById(id);
+        final var optionalCategory = categoryService.getCategoryById(id);
 
         // I'm used to kotlin ?. ?: syntax, so I use optional to not forget null checks
         if (optionalCategory.isEmpty()) {
@@ -35,14 +35,14 @@ public class CategoryController {
 
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) throws URISyntaxException {
-        var createdCategory = categoryService.createCategory(categoryDTO);
+        final var createdCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.created(new URI("/api/categories/" + createdCategory.getId())).body(createdCategory);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable final Long id, @RequestBody @Valid final CategoryDTO categoryDTO) throws URISyntaxException {
         if (categoryService.existsById(id)) {
-            var updatedCategory = categoryService.saveCategory(id, categoryDTO);
+            final var updatedCategory = categoryService.saveCategory(id, categoryDTO);
             return ResponseEntity.ok(updatedCategory);
         }
 
