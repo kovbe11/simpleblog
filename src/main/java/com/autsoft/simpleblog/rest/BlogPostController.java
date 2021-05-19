@@ -16,7 +16,7 @@ public class BlogPostController {
 
     private BlogPostService blogPostService;
 
-    BlogPostController(final BlogPostService blogPostService) {
+    public BlogPostController(final BlogPostService blogPostService) {
         this.blogPostService = blogPostService;
     }
 
@@ -40,7 +40,7 @@ public class BlogPostController {
     // CRUD
     @GetMapping("/{id}")
     public ResponseEntity<BlogPost> getBlogPost(@PathVariable final Long id) {
-        var optionalBlogPost = blogPostService.getBlogPost(id);
+        var optionalBlogPost = blogPostService.getBlogPostById(id);
 
         // I'm used to kotlin ?. ?: syntax, so I use optional to not forget null checks
         if(optionalBlogPost.isEmpty()){
@@ -51,8 +51,9 @@ public class BlogPostController {
     }
 
     @PostMapping
-    public ResponseEntity<BlogPost> createBlogPost(@RequestBody @Valid final BlogPostDTO blogPostDTO) {
-        return ResponseEntity.ok(blogPostService.createBlogPost(blogPostDTO));
+    public ResponseEntity<BlogPost> createBlogPost(@RequestBody @Valid final BlogPostDTO blogPostDTO) throws URISyntaxException {
+        final var createdBlogPost = blogPostService.createBlogPost(blogPostDTO);
+        return ResponseEntity.created(new URI("/api/blogPosts/" + createdBlogPost.getId())).body(createdBlogPost);
     }
 
     // doesn't update blogpost's categories, so this could be a patch as well. I decided to use PUT
@@ -62,8 +63,12 @@ public class BlogPostController {
             final var updatedBlogPost = blogPostService.saveBlogPost(id, blogPostDTO);
             return ResponseEntity.ok(updatedBlogPost);
         }
-        final var createdBlogPost = blogPostService.createBlogPost(blogPostDTO);
-        return ResponseEntity.created(new URI("/api/blogPosts/" + createdBlogPost.getId())).body(createdBlogPost);
+
+        // even though PUT should mean you get the asked resource at that id, I haven't found a way to
+        // tell hibernate what ID to use when creating a new entity. Even if you set the ID property of
+        // the entity and save it that way, hibernate will know that it is a new entity and create with new ID.
+        // but maybe it's just me doing something wrong.
+        return createBlogPost(blogPostDTO);
     }
 
     @DeleteMapping("/{id}")

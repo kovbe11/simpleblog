@@ -23,10 +23,16 @@ public class BlogPostService {
     private BlogPostRepository blogPostRepository;
     private CategoryRepository categoryRepository;
 
-    BlogPostService(final BlogPostRepository blogPostRepository,
+    public BlogPostService(final BlogPostRepository blogPostRepository,
                     final CategoryRepository categoryRepository) {
         this.blogPostRepository = blogPostRepository;
         this.categoryRepository = categoryRepository;
+    }
+
+
+    // CRUD
+    public Optional<BlogPost> getBlogPostById(final Long id) {
+        return Optional.empty();
     }
 
     public BlogPost createBlogPost(final BlogPostDTO blogPostDTO){
@@ -44,6 +50,8 @@ public class BlogPostService {
     public boolean existsById(final Long id){
         return true;
     }
+
+    // Functionality
 
     public BlogPost assignCategoryToBlogPost(final Long id, final String categoryName){
         return assignCategoryToBlogPostWithEntities(null, null);
@@ -65,7 +73,4 @@ public class BlogPostService {
         return Page.empty();
     }
 
-    public Optional<BlogPost> getBlogPost(Long id) {
-        return Optional.empty();
-    }
 }
