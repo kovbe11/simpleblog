@@ -12,6 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @Transactional
 public class BlogPostService {
@@ -63,4 +65,7 @@ public class BlogPostService {
         return Page.empty();
     }
 
+    public Optional<BlogPost> getBlogPost(Long id) {
+        return Optional.empty();
+    }
 }
