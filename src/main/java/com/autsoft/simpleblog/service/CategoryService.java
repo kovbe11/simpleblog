@@ -86,4 +86,8 @@ public class CategoryService {
                 });
     }
 
+    public Optional<Category> findCategoryByName(final String name){
+        return categoryRepository.findByName(name);
+    }
+
 }

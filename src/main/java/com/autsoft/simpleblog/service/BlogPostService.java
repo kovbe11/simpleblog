@@ -6,13 +6,15 @@ import com.autsoft.simpleblog.model.BlogPost;
 import com.autsoft.simpleblog.model.Category;
 import com.autsoft.simpleblog.model.TooManyCategoriesException;
 import com.autsoft.simpleblog.repository.BlogPostRepository;
-import com.autsoft.simpleblog.repository.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static com.autsoft.simpleblog.dto.DTOUtilities.blogPostFromDTOWithoutRelations;
@@ -25,12 +27,12 @@ public class BlogPostService {
     private final Logger logger = LoggerFactory.getLogger(BlogPostService.class);
 
     private final BlogPostRepository blogPostRepository;
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
     public BlogPostService(final BlogPostRepository blogPostRepository,
-                           final CategoryRepository categoryRepository) {
+                           final CategoryService categoryService) {
         this.blogPostRepository = blogPostRepository;
-        this.categoryRepository = categoryRepository;
+        this.categoryService = categoryService;
     }
 
 
@@ -68,7 +70,7 @@ public class BlogPostService {
         if (optionalBlogPost.isEmpty()) {
             return Optional.empty();
         }
-        final var optionalCategory = categoryRepository.findByName(categoryName);
+        final var optionalCategory = categoryService.findCategoryByName(categoryName);
         if (optionalCategory.isEmpty()) {
             return Optional.empty();
         }
@@ -86,7 +88,7 @@ public class BlogPostService {
         if (optionalBlogPost.isEmpty()) {
             return Optional.empty();
         }
-        final var optionalCategory = categoryRepository.findByName(categoryName);
+        final var optionalCategory = categoryService.findCategoryByName(categoryName);
         if (optionalCategory.isEmpty()) {
             return Optional.empty();
         }
@@ -98,9 +100,14 @@ public class BlogPostService {
         return blogPostRepository.save(blogPost);
     }
 
-    public Page<BlogPost> findBlogPostsByCategoryTag(final String tag) {
-        // TODO
-        return Page.empty();
+    public Page<BlogPost> findBlogPostsByCategoryTag(final String label, Pageable pageable) {
+        final var blogIds = blogPostRepository.findBlogPostsWithCategoriesTaggedPaged(label, pageable);
+        final var longBlogIds = blogIds.map(BigInteger::longValue);
+        // this is a known issue: https://stackoverflow.com/questions/31011797/bug-in-spring-data-jpa-spring-data-returns-listbiginteger-instead-of-listlon
+        final var mapping = new HashMap<Long, BlogPost>();
+        blogPostRepository.findAllById(longBlogIds.getContent())
+                .forEach(blogPost -> mapping.put(blogPost.getId(), blogPost));
+        return longBlogIds.map(mapping::get);
     }
 
 }

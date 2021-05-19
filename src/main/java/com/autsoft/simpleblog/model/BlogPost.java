@@ -41,8 +41,8 @@ public class BlogPost {
     @ManyToMany
     @JoinTable(
             name = "blog_post_categories",
-            joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "blog_post_id", referencedColumnName = "id"),
+            joinColumns = @JoinColumn(name = "blog_post_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"blog_post_id", "category_id"}) // -> | 1 | 2 | can't be twice
     )
     @JsonManagedReference

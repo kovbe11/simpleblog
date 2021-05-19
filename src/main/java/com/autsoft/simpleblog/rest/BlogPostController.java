@@ -5,6 +5,7 @@ import com.autsoft.simpleblog.model.BlogPost;
 import com.autsoft.simpleblog.model.TooManyCategoriesException;
 import com.autsoft.simpleblog.service.BlogPostService;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,10 +23,10 @@ public class BlogPostController {
         this.blogPostService = blogPostService;
     }
 
-    // functionality
-    @GetMapping("/search/{tag}")
-    public ResponseEntity<Page<BlogPost>> searchByTags(@PathVariable final String tag) {
-        return ResponseEntity.ok(blogPostService.findBlogPostsByCategoryTag(tag));
+    // Functionality
+    @GetMapping("/search/{label}")
+    public ResponseEntity<Page<BlogPost>> searchByTags(@PathVariable final String label, @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size) {
+        return ResponseEntity.ok(blogPostService.findBlogPostsByCategoryTag(label, PageRequest.of(page, size)));
     }
 
     @PostMapping("/{id}/addCategory/{categoryName}")

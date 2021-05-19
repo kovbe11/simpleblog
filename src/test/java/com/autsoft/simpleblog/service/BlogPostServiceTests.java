@@ -10,14 +10,14 @@ import static org.mockito.Mockito.mock;
 public class BlogPostServiceTests {
 
     private BlogPostService blogPostService;
-    private CategoryRepository categoryRepository;
+    private CategoryService categoryService;
     private BlogPostRepository blogPostRepository;
 
     @BeforeEach
     public void init(){
-        categoryRepository = mock(CategoryRepository.class);
+        categoryService = mock(CategoryService.class);
         blogPostRepository = mock(BlogPostRepository.class);
-        blogPostService = new BlogPostService(blogPostRepository, categoryRepository);
+        blogPostService = new BlogPostService(blogPostRepository, categoryService);
     }
 
     @Test
