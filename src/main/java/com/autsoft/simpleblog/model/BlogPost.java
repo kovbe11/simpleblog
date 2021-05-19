@@ -1,5 +1,6 @@
 package com.autsoft.simpleblog.model;
 
+import com.autsoft.simpleblog.dto.BlogPostDTO;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

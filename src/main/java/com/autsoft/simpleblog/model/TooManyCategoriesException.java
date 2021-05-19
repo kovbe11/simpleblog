@@ -1,6 +1,6 @@
 package com.autsoft.simpleblog.model;
 
-class TooManyCategoriesException extends Exception {
+public class TooManyCategoriesException extends Exception {
     TooManyCategoriesException() {
         super();
     }

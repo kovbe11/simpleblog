@@ -2,6 +2,7 @@ package com.autsoft.simpleblog.rest;
 
 import com.autsoft.simpleblog.dto.BlogPostDTO;
 import com.autsoft.simpleblog.model.BlogPost;
+import com.autsoft.simpleblog.model.TooManyCategoriesException;
 import com.autsoft.simpleblog.service.BlogPostService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,11 @@ public class BlogPostController {
         this.blogPostService = blogPostService;
     }
 
+//    @ExceptionHandler({BlogPostNotFoundException.class, CategoryNotFoundException.class})
+//    public void handleNotFoundErrors(){
+//
+//    }
+
 
     // functionality
     @GetMapping("/search/{tag}")
@@ -29,12 +35,27 @@ public class BlogPostController {
 
     @PostMapping("/{id}/addCategory/{categoryName}")
     public ResponseEntity<BlogPost> addCategoryToBlogPost(@PathVariable final Long id, @PathVariable final String categoryName) {
-        return ResponseEntity.ok(blogPostService.assignCategoryToBlogPost(id, categoryName));
+        BlogPost blogPost = null;
+        try{
+            var optionalBlogPost = blogPostService.assignCategoryToBlogPost(id, categoryName);
+            if(optionalBlogPost.isEmpty()){
+                return ResponseEntity.notFound().build();
+            }
+            blogPost = optionalBlogPost.get();
+        }catch (TooManyCategoriesException ex){
+            // can I do this better?
+            return ResponseEntity.badRequest().body(null);
+        }
+        return ResponseEntity.ok(blogPost);
     }
 
     @DeleteMapping("/{id}/removeCategory/{categoryName}")
     public ResponseEntity<BlogPost> removeCategoryFromBlogPost(@PathVariable final Long id, @PathVariable final String categoryName) {
-        return ResponseEntity.ok(blogPostService.removeBlogPostFromCategory(id, categoryName));
+        var optionalBlogPost = blogPostService.removeBlogPostFromCategory(id, categoryName);
+        if(optionalBlogPost.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(optionalBlogPost.get());
     }
 
     // CRUD
