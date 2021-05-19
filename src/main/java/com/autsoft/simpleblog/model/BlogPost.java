@@ -1,5 +1,6 @@
 package com.autsoft.simpleblog.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +8,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -35,6 +37,7 @@ public class BlogPost {
     // max 5 categories
     // two BlogPosts can be equal even if their assigned categories don't match - not a big problem
     // necessary to implement EqualsAndHashcode, otherwise it's recursive
+    // todo: cascade type missing!
     @ManyToMany
     @JoinTable(
             name = "blog_post_categories",
@@ -42,17 +45,20 @@ public class BlogPost {
             inverseJoinColumns = @JoinColumn(name = "blog_post_id", referencedColumnName = "id"),
             uniqueConstraints = @UniqueConstraint(columnNames = {"blog_post_id", "category_id"}) // -> | 1 | 2 | can't be twice
     )
-    private List<Category> categories;
+    @JsonManagedReference
+    private Set<Category> categories = new HashSet<>();
 
-    public void assignToCategory(Category category) throws TooManyCategoriesException {
+    public void assignToCategory(final Category category) throws TooManyCategoriesException {
         if (categories.size() >= 5) {
             throw new TooManyCategoriesException();
         }
         categories.add(category);
+        category.getBlogPosts().add(this);
     }
 
-    public void removeFromCategory(Category category) {
+    public void removeFromCategory(final Category category) {
         categories.remove(category);
+        category.getBlogPosts().remove(this);
     }
 
     @PrePersist

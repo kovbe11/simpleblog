@@ -1,5 +1,6 @@
 package com.autsoft.simpleblog.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,8 +9,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -28,7 +29,9 @@ public class Tag {
 
     // two Tags can be equal with different tagged categories - not a big problem
     // necessary to implement EqualsAndHashcode, otherwise it's recursive
+    // todo: cascade type missing!
     @NotNull
     @ManyToMany(mappedBy = "tags")
-    private List<Category> taggedCategories = new ArrayList<>();
+    @JsonBackReference
+    private Set<Category> taggedCategories = new HashSet<>();
 }
