@@ -11,7 +11,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 
-@RestController("/api/categories")
+@RestController
+@RequestMapping("/api/categories")
 public class CategoryController {
 
 

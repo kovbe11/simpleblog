@@ -54,7 +54,7 @@ public class BlogPostService {
 
     public void deleteBlogPost(final Long id) {
         blogPostRepository.findById(id)
-                .ifPresent(it -> blogPostRepository.delete(it));
+                .ifPresent(blogPostRepository::delete);
     }
 
     public boolean existsById(final Long id) {

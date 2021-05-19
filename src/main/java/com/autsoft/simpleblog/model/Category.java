@@ -37,12 +37,12 @@ public class Category {
 
     // todo: cascade type missing!
     @NotNull
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(
             name = "category_tags",
-            joinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
-            uniqueConstraints = @UniqueConstraint(columnNames = {"tag_id", "category_id"})
+            joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id", referencedColumnName = "id"),
+            uniqueConstraints = @UniqueConstraint(columnNames = {"category_id", "tag_id"})
     )
     @JsonManagedReference
     private Set<Tag> tags = new HashSet<>();

@@ -12,7 +12,8 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-@RestController("/api/blogPosts")
+@RestController
+@RequestMapping("/api/blogPosts")
 public class BlogPostController {
 
     private final BlogPostService blogPostService;

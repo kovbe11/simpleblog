@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import static com.autsoft.simpleblog.dto.DTOUtilities.categoryFromDTOWithoutRelations;
 import static com.autsoft.simpleblog.dto.DTOUtilities.updateCategoryWithDTO;
@@ -37,14 +38,15 @@ public class CategoryService {
 
     public Category createCategory(final CategoryDTO categoryDTO) {
         final var category = categoryFromDTOWithoutRelations(categoryDTO);
+        updateCategoryTags(category, categoryDTO);
         return categoryRepository.save(category);
     }
 
     public Category saveCategory(final Long id, final CategoryDTO categoryDTO) {
         final var toModifyCategory = categoryRepository.findById(id);
         return toModifyCategory.map(category -> {
-            updateCategoryWithDTO(category, categoryDTO);
             updateCategoryTags(category, categoryDTO);
+            updateCategoryWithDTO(category, categoryDTO);
             return category;
         }).orElseGet(() -> createCategory(categoryDTO));
     }
@@ -60,13 +62,28 @@ public class CategoryService {
 
     private void updateCategoryTags(Category category, CategoryDTO categoryDTO) {
         final var tagLabels = categoryDTO.getTags();
-        final var tags = new HashSet<Tag>();
+        final var newTags = new HashSet<Tag>();
         tagLabels.forEach(label -> tagRepository.findByLabel(label)
-                .ifPresentOrElse(tags::add, () -> {
+                .ifPresentOrElse(newTags::add, () -> {
+                    final var tag = new Tag();
                     tag.setLabel(label);
-                    tags.add(tagRepository.save(tag));
+                    newTags.add(tagRepository.save(tag));
                 }));
-        category.setTags(tags);
-        //TODO: cleanup orphan tags!
+        cleanUpOrphanTags(category, newTags);
+        category.setTags(newTags);
     }
+
+    private void cleanUpOrphanTags(Category category, Set<Tag> newTags) {
+        final var prevTags = category.getTags();
+        prevTags.stream()
+                .filter(tag -> !newTags.contains(tag))
+                .forEach(removedTag -> {
+                    final var taggedCategories = removedTag.getTaggedCategories();
+                    taggedCategories.remove(category);
+                    if(taggedCategories.isEmpty()){
+                        tagRepository.delete(removedTag);
+                    }
+                });
+    }
+
 }
