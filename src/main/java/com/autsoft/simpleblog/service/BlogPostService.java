@@ -27,35 +27,39 @@ public class BlogPostService {
         this.categoryRepository = categoryRepository;
     }
 
-    BlogPost createBlogPost(final BlogPostDTO blogPostDTO){
+    public BlogPost createBlogPost(final BlogPostDTO blogPostDTO){
         return null;
     }
 
-    BlogPost saveBlogPost(final Long id, final BlogPostDTO blogPostDTO){
+    public BlogPost saveBlogPost(final Long id, final BlogPostDTO blogPostDTO){
         return null;
     }
 
-    void deleteBlogPost(final Long id){
+    public void deleteBlogPost(final Long id){
 
     }
 
-    BlogPost assignCategoryToBlogPost(final Long id, final String categoryName){
+    public boolean existsById(final Long id){
+        return true;
+    }
+
+    public BlogPost assignCategoryToBlogPost(final Long id, final String categoryName){
         return assignCategoryToBlogPostWithEntities(null, null);
     }
 
-    BlogPost assignCategoryToBlogPostWithEntities(final BlogPost blogPost, final Category category){
+    public BlogPost assignCategoryToBlogPostWithEntities(final BlogPost blogPost, final Category category){
         return null;
     }
 
-    BlogPost removeBlogPostFromCategory(final Long id, final String categoryName){
+    public BlogPost removeBlogPostFromCategory(final Long id, final String categoryName){
         return removeBlogPostFromCategoryWithEntities(null, null);
     }
 
-    private BlogPost removeBlogPostFromCategoryWithEntities(final BlogPost blogPost, final Category category) {
+    public BlogPost removeBlogPostFromCategoryWithEntities(final BlogPost blogPost, final Category category) {
         return null;
     }
 
-    private Page<BlogPost> findBlogPostsByCategoryTag(final String tag){
+    public Page<BlogPost> findBlogPostsByCategoryTag(final String tag){
         return Page.empty();
     }
 
