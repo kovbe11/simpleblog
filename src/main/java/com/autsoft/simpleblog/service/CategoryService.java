@@ -5,8 +5,6 @@ import com.autsoft.simpleblog.model.Category;
 import com.autsoft.simpleblog.model.Tag;
 import com.autsoft.simpleblog.repository.CategoryRepository;
 import com.autsoft.simpleblog.repository.TagRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,10 +19,10 @@ import static com.autsoft.simpleblog.dto.DTOUtilities.updateCategoryWithDTO;
 @Transactional
 public class CategoryService {
 
-    private final Logger logger = LoggerFactory.getLogger(CategoryService.class);
-
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+
+    //TODO: javadoc (out of time)
 
     public CategoryService(final CategoryRepository categoryRepository,
                            final TagRepository tagRepository) {

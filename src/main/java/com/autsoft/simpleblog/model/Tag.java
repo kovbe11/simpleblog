@@ -27,9 +27,10 @@ public class Tag {
     @Column(length = 10, nullable = false)
     private String label;
 
-    // two Tags can be equal with different tagged categories - not a big problem
-    // necessary to implement EqualsAndHashcode, otherwise it's recursive
-    // todo: cascade type missing!
+    /**
+     * two Tags can be equal with different tagged categories - not a big problem
+     * but it is necessary to implement EqualsAndHashcode, otherwise it's recursive
+     */
     @NotNull
     @ManyToMany(mappedBy = "tags")
     @JsonBackReference

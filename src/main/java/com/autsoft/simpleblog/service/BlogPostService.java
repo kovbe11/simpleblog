@@ -6,8 +6,6 @@ import com.autsoft.simpleblog.model.BlogPost;
 import com.autsoft.simpleblog.model.Category;
 import com.autsoft.simpleblog.model.TooManyCategoriesException;
 import com.autsoft.simpleblog.repository.BlogPostRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,10 +22,10 @@ import static com.autsoft.simpleblog.dto.DTOUtilities.updateBlogPostWithDTO;
 @Transactional
 public class BlogPostService {
 
-    private final Logger logger = LoggerFactory.getLogger(BlogPostService.class);
-
     private final BlogPostRepository blogPostRepository;
     private final CategoryService categoryService;
+
+    //TODO: javadoc (out of time)
 
     public BlogPostService(final BlogPostRepository blogPostRepository,
                            final CategoryService categoryService) {

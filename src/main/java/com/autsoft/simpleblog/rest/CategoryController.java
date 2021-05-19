@@ -23,6 +23,13 @@ public class CategoryController {
     }
 
     // CRUD
+
+    /**
+     * GET /categories/3 : Gets the category with id 3
+     *
+     * @param id : The id of category to fetch
+     * @return Returns OK if exists, returns 404 if not
+     */
     @GetMapping("/{id}")
     public ResponseEntity<Category> getCategory(@PathVariable final Long id) {
         final var optionalCategory = categoryService.getCategoryById(id);
@@ -34,12 +41,25 @@ public class CategoryController {
         return ResponseEntity.ok(optionalCategory.get());
     }
 
+    /**
+     * POST /categories: Creates a new BlogPost
+     *
+     * @param categoryDTO The data of the Category to create with
+     * @return Returns the Category with all it's information
+     * */
     @PostMapping
     public ResponseEntity<Category> createCategory(@RequestBody @Valid final CategoryDTO categoryDTO) throws URISyntaxException {
         final var createdCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.created(new URI("/api/categories/" + createdCategory.getId())).body(createdCategory);
     }
 
+    /**
+     * PUT /categories/5 Updates the category with id 5
+     *
+     * @param id The id of the category to update
+     * @param categoryDTO The data to update
+     * @return Returns the updated category if it was updated, and returns created category if it was created
+     * */
     @PutMapping("/{id}")
     public ResponseEntity<Category> updateCategory(@PathVariable final Long id, @RequestBody @Valid final CategoryDTO categoryDTO) throws URISyntaxException {
         if (categoryService.existsById(id)) {
@@ -54,6 +74,12 @@ public class CategoryController {
         return createCategory(categoryDTO);
     }
 
+    /**
+     * DELETE /blogPosts/3 : delete the category with id 3
+     *
+     * @param id : The id of category to delete
+     * @return Returns OK if no error was thrown
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCategory(@PathVariable final Long id) {
         categoryService.deleteCategory(id);

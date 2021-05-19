@@ -1,12 +1,23 @@
 package com.autsoft.simpleblog.service;
 
+import com.autsoft.simpleblog.model.BlogPost;
+import com.autsoft.simpleblog.model.Category;
+import com.autsoft.simpleblog.model.Tag;
 import com.autsoft.simpleblog.repository.BlogPostRepository;
 import com.autsoft.simpleblog.repository.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.mockito.Mockito.mock;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+
+//todo: out of time
 public class BlogPostServiceTests {
 
     private BlogPostService blogPostService;

@@ -34,10 +34,11 @@ public class BlogPost {
 
     private LocalDateTime modified;
 
-    // max 5 categories
-    // two BlogPosts can be equal even if their assigned categories don't match - not a big problem
-    // necessary to implement EqualsAndHashcode, otherwise it's recursive
-    // todo: cascade type missing!
+    /**
+     * max 5 categories
+     * two BlogPosts can be equal even if their assigned categories don't match - not a big problem
+     * but it is necessary to implement EqualsAndHashcode, otherwise it's recursive
+     * */
     @ManyToMany
     @JoinTable(
             name = "blog_post_categories",
@@ -48,7 +49,10 @@ public class BlogPost {
     @JsonManagedReference
     private Set<Category> categories = new HashSet<>();
 
-    // we know this problem can happen, so it shouldn't be handled by exceptions but returning true false seems worse..
+    /**
+     * @param category The category we want to assign to the BlogPost
+     * @throws TooManyCategoriesException If there are already 5 categories assigned, it throws
+     * */
     public void assignToCategory(final Category category) throws TooManyCategoriesException {
         if (categories.size() >= 5) {
             throw new TooManyCategoriesException();

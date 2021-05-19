@@ -27,15 +27,15 @@ public class Category {
     private String name;
 
 
-    // two Categories can be equal with different BlogPosts - not a big problem
-    // necessary to implement EqualsAndHashcode, otherwise it's recursive
-    // todo: cascade type missing!
+    /**
+     * Two Categories can be equal with different BlogPosts - not a big problem
+     * but it is necessary to implement EqualsAndHashcode, otherwise it's recursive
+     */
     @NotNull
     @ManyToMany(mappedBy = "categories")
     @JsonBackReference
     private Set<BlogPost> blogPosts = new HashSet<>();
 
-    // todo: cascade type missing!
     @NotNull
     @ManyToMany(cascade = {CascadeType.PERSIST})
     @JoinTable(
