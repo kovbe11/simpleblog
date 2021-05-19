@@ -1,0 +1,5 @@
+POST host/api/blogPosts/1/addCategory/CategoryName1       ->  összerendelés
+DELETE host/api/blogPosts/1/removeCategory/CategoryName1  ->  visszavonás
+GET host/api/blogPosts/search/abc?page=0&size=1           ->  abc címkével rendelkező blogposztok első találat
+PUT host/api/categories/1 -> Ha a címkék tömbben új címkét adunk be létrehozza a címkét, 
+							ha egy címke "elárvul" akkor törli azt tehát nincs külön tags endpoint
