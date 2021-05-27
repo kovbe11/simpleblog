@@ -1,6 +1,21 @@
-# Egyszerű blog motor
+# Simple blog motor
 
-- A funkcionalitás 99% ban elkészült, nem volt időm még egyszer átgondolni hol kéne hibát kezelni, illetve nincs logolás például.
-- Dokumentálást a REST Controllereken tudtam csak bejefezni, a szolgáltatás réteget még mindenképp dokumentáltam volna.
-- Teszteléssel sajnos nem jutottam semmire, viszont megterveztem hogy milyen teszteseteket kéne mindenféleképpen felvenni.
+Entities:
+
+- BlogPost
+- Category
+- Tag
+
+Functionality specification:
+
+- CRUD for BlogPosts and Categories
+- Assigning categories to BlogPosts, and removing them
+- Searching for BlogPosts by tags of categories
+- Maximum 5 categories for BlogPosts
+
+Misc:
+
+- REST api, auth not needed
+- Done in 8 hours
+- After feedback fixed issues
 
