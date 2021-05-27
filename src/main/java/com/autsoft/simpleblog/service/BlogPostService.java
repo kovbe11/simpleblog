@@ -11,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigInteger;
-import java.util.HashMap;
 import java.util.Optional;
 
 import static com.autsoft.simpleblog.dto.DTOUtilities.blogPostFromDTOWithoutRelations;
@@ -99,13 +97,8 @@ public class BlogPostService {
     }
 
     public Page<BlogPost> findBlogPostsByCategoryTag(final String label, Pageable pageable) {
-        final var blogIds = blogPostRepository.findBlogPostsWithCategoriesTaggedPaged(label, pageable);
-        final var longBlogIds = blogIds.map(BigInteger::longValue);
-        // this is a known issue: https://stackoverflow.com/questions/31011797/bug-in-spring-data-jpa-spring-data-returns-listbiginteger-instead-of-listlon
-        final var mapping = new HashMap<Long, BlogPost>();
-        blogPostRepository.findAllById(longBlogIds.getContent())
-                .forEach(blogPost -> mapping.put(blogPost.getId(), blogPost));
-        return longBlogIds.map(mapping::get);
+//        return blogPostRepository.findBlogPostsWithCategoriesTaggedNative(label, pageable);
+        return blogPostRepository.findBlogPostsWithCategoriesTaggedJPQL(label, pageable);
     }
 
 }
