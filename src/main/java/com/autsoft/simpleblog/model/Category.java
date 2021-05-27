@@ -1,5 +1,6 @@
 package com.autsoft.simpleblog.model;
 
+import com.autsoft.simpleblog.service.TooManyCategoriesException;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;

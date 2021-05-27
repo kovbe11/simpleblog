@@ -2,7 +2,7 @@ package com.autsoft.simpleblog.rest;
 
 import com.autsoft.simpleblog.dto.BlogPostDTO;
 import com.autsoft.simpleblog.model.BlogPost;
-import com.autsoft.simpleblog.model.TooManyCategoriesException;
+import com.autsoft.simpleblog.service.TooManyCategoriesException;
 import com.autsoft.simpleblog.service.BlogPostService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

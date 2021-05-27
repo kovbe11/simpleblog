@@ -1,4 +1,4 @@
-package com.autsoft.simpleblog.model;
+package com.autsoft.simpleblog.service;
 
 public class TooManyCategoriesException extends Exception {
     TooManyCategoriesException() {
