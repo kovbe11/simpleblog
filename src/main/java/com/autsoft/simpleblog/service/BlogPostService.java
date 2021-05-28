@@ -4,7 +4,6 @@ package com.autsoft.simpleblog.service;
 import com.autsoft.simpleblog.dto.BlogPostDTO;
 import com.autsoft.simpleblog.model.BlogPost;
 import com.autsoft.simpleblog.model.Category;
-import com.autsoft.simpleblog.model.TooManyCategoriesException;
 import com.autsoft.simpleblog.repository.BlogPostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,6 +74,9 @@ public class BlogPostService {
 
     public BlogPost assignCategoryToBlogPostWithEntities(final BlogPost blogPost, final Category category)
             throws TooManyCategoriesException {
+        if(blogPost.getCategories().size() >= 5){
+            throw new TooManyCategoriesException();
+        }
         blogPost.assignToCategory(category);
         return blogPostRepository.save(blogPost);
     }

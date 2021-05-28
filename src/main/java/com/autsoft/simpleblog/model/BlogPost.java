@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -26,9 +27,8 @@ public class BlogPost {
     private String title;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String body;
-
 
     private LocalDateTime created;
 
@@ -51,21 +51,22 @@ public class BlogPost {
 
     /**
      * @param category The category we want to assign to the BlogPost
-     * @throws TooManyCategoriesException If there are already 5 categories assigned, it throws
      * */
-    public void assignToCategory(final Category category) throws TooManyCategoriesException {
-        if (categories.size() >= 5) {
-            throw new TooManyCategoriesException();
-        }
+    public void assignToCategory(final Category category) {
         categories.add(category);
         category.getBlogPosts().add(this);
     }
 
+    /**
+     * @param category The category we want to remove from the BlogPost
+     * */
     public void removeFromCategory(final Category category) {
         categories.remove(category);
         category.getBlogPosts().remove(this);
     }
 
+
+    // I think for a this simple application this is perfectly fine
     @PrePersist
     private void onCreate() {
         final var now = LocalDateTime.now();
