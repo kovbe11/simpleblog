@@ -3,6 +3,7 @@ package com.autsoft.simpleblog.rest;
 import com.autsoft.simpleblog.dto.CategoryDTO;
 import com.autsoft.simpleblog.model.Category;
 import com.autsoft.simpleblog.service.CategoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,6 @@ public class CategoryController {
     }
 
     // CRUD
-
     /**
      * GET /categories/3 : Gets the category with id 3
      *
@@ -31,14 +31,8 @@ public class CategoryController {
      * @return Returns OK if exists, returns 404 if not
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategory(@PathVariable final Long id) {
-        final var optionalCategory = categoryService.getCategoryById(id);
-
-        // I'm used to kotlin ?. ?: syntax, so I use optional to not forget null checks
-        if (optionalCategory.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(optionalCategory.get());
+    public Category getCategory(@PathVariable final Long id) {
+        return categoryService.getCategoryById(id);
     }
 
     /**
@@ -67,10 +61,6 @@ public class CategoryController {
             return ResponseEntity.ok(updatedCategory);
         }
 
-        // even though PUT should mean you get the asked resource at that id, I haven't found a way to
-        // tell hibernate what ID to use when creating a new entity. Even if you set the ID property of
-        // the entity and save it that way, hibernate will know that it is a new entity and create with new ID.
-        // but maybe it's just me doing something wrong.
         return createCategory(categoryDTO);
     }
 
@@ -78,12 +68,11 @@ public class CategoryController {
      * DELETE /blogPosts/3 : delete the category with id 3
      *
      * @param id : The id of category to delete
-     * @return Returns OK if no error was thrown
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCategory(@PathVariable final Long id) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteCategory(@PathVariable final Long id) {
         categoryService.deleteCategory(id);
-        return ResponseEntity.ok().build();
     }
 
 }

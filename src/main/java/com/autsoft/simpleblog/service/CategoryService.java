@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.autsoft.simpleblog.dto.DTOUtilities.categoryFromDTOWithoutRelations;
@@ -22,7 +21,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
 
-    //TODO: javadoc (out of time)
 
     public CategoryService(final CategoryRepository categoryRepository,
                            final TagRepository tagRepository) {
@@ -30,8 +28,9 @@ public class CategoryService {
         this.categoryRepository = categoryRepository;
     }
 
-    public Optional<Category> getCategoryById(final Long id) {
-        return categoryRepository.findById(id);
+    public Category getCategoryById(final Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category with id " + id + " was not found!"));
     }
 
     public Category createCategory(final CategoryDTO categoryDTO) {
@@ -78,14 +77,16 @@ public class CategoryService {
                 .forEach(removedTag -> {
                     final var taggedCategories = removedTag.getTaggedCategories();
                     taggedCategories.remove(category);
-                    if(taggedCategories.isEmpty()){
+                    if (taggedCategories.isEmpty()) {
                         tagRepository.delete(removedTag);
                     }
                 });
     }
 
-    public Optional<Category> findCategoryByName(final String name){
-        return categoryRepository.findByName(name);
+    public Category findCategoryByName(final String name) {
+        return categoryRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Category with name '" + name + "' was not found!"));
+
     }
 
 }

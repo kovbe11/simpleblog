@@ -20,10 +20,10 @@ public interface BlogPostRepository extends JpaRepository<BlogPost, Long> {
     @Query(value = "SELECT DISTINCT bp.id, bp.body, bp.created, bp.modified, bp.title FROM category c JOIN category_tags ct ON c.id = ct.category_id JOIN tag ON tag.id = ct.tag_id JOIN blog_post_categories bpc ON bpc.category_id = ct.category_id JOIN blog_post bp ON bp.id = bpc.blog_post_id WHERE tag.label=?1",
             countQuery = "SELECT COUNT(DISTINCT bp.id) AS COUNT FROM category c JOIN category_tags ct ON c.id = ct.category_id JOIN tag ON tag.id = ct.tag_id JOIN blog_post_categories bpc ON bpc.category_id = ct.category_id JOIN blog_post bp ON bp.id = bpc.blog_post_id WHERE tag.label=?1",
             nativeQuery = true)
-    Page<BlogPost> findBlogPostsWithCategoriesTaggedNative(final String label, final Pageable pageable);
+    Page<BlogPost> findBlogPostsWithCategoriesTaggedWithLabelNative(final String label, final Pageable pageable);
 
     // well this is much much easier to read than natively. (though it's probably slower)
     @Query("SELECT DISTINCT bp FROM BlogPost bp JOIN bp.categories c JOIN c.tags t WHERE t.label=?1")
-    Page<BlogPost> findBlogPostsWithCategoriesTaggedJPQL(final String label, final Pageable pageable);
+    Page<BlogPost> findBlogPostsWithCategoriesTaggedWithLabel(final String label, final Pageable pageable);
 
 }

@@ -10,8 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import static com.autsoft.simpleblog.dto.DTOUtilities.blogPostFromDTOWithoutRelations;
 import static com.autsoft.simpleblog.dto.DTOUtilities.updateBlogPostWithDTO;
 
@@ -22,7 +20,6 @@ public class BlogPostService {
     private final BlogPostRepository blogPostRepository;
     private final CategoryService categoryService;
 
-    //TODO: javadoc (out of time)
 
     public BlogPostService(final BlogPostRepository blogPostRepository,
                            final CategoryService categoryService) {
@@ -30,10 +27,10 @@ public class BlogPostService {
         this.categoryService = categoryService;
     }
 
-
     // CRUD
-    public Optional<BlogPost> getBlogPostById(final Long id) {
-        return blogPostRepository.findById(id);
+    public BlogPost getBlogPostById(final Long id) {
+        return blogPostRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("BlogPost with id " + id + " was not found!"));
     }
 
     public BlogPost createBlogPost(final BlogPostDTO blogPostDTO) {
@@ -59,38 +56,27 @@ public class BlogPostService {
     }
 
     // Functionality
-    public Optional<BlogPost> assignCategoryToBlogPost(final Long blogPostId, final String categoryName)
-            throws TooManyCategoriesException {
-        final var optionalBlogPost = blogPostRepository.findById(blogPostId);
-        if (optionalBlogPost.isEmpty()) {
-            return Optional.empty();
-        }
-        final var optionalCategory = categoryService.findCategoryByName(categoryName);
-        if (optionalCategory.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(assignCategoryToBlogPostWithEntities(optionalBlogPost.get(), optionalCategory.get()));
+    public BlogPost assignCategoryToBlogPost(final Long blogPostId, final String categoryName) {
+        final var blogPost = blogPostRepository.findById(blogPostId)
+                .orElseThrow(() -> new EntityNotFoundException("BlogPost with id " + blogPostId + " was not found!"));
+
+        final var category = categoryService.findCategoryByName(categoryName);
+        return assignCategoryToBlogPostWithEntities(blogPost, category);
     }
 
-    public BlogPost assignCategoryToBlogPostWithEntities(final BlogPost blogPost, final Category category)
-            throws TooManyCategoriesException {
-        if(blogPost.getCategories().size() >= 5){
-            throw new TooManyCategoriesException();
+    public BlogPost assignCategoryToBlogPostWithEntities(final BlogPost blogPost, final Category category) {
+        if (blogPost.getCategories().size() >= 5) {
+            throw new TooManyCategoriesException(blogPost);
         }
         blogPost.assignToCategory(category);
         return blogPostRepository.save(blogPost);
     }
 
-    public Optional<BlogPost> removeBlogPostFromCategory(final Long blogPostId, final String categoryName) {
-        final var optionalBlogPost = blogPostRepository.findById(blogPostId);
-        if (optionalBlogPost.isEmpty()) {
-            return Optional.empty();
-        }
-        final var optionalCategory = categoryService.findCategoryByName(categoryName);
-        if (optionalCategory.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(removeBlogPostFromCategoryWithEntities(optionalBlogPost.get(), optionalCategory.get()));
+    public BlogPost removeBlogPostFromCategory(final Long blogPostId, final String categoryName) {
+        final var blogPost = blogPostRepository.findById(blogPostId)
+                .orElseThrow(() -> new EntityNotFoundException("BlogPost with id " + blogPostId + " was not found!"));
+        final var category = categoryService.findCategoryByName(categoryName);
+        return removeBlogPostFromCategoryWithEntities(blogPost, category);
     }
 
     public BlogPost removeBlogPostFromCategoryWithEntities(final BlogPost blogPost, final Category category) {
@@ -99,8 +85,7 @@ public class BlogPostService {
     }
 
     public Page<BlogPost> findBlogPostsByCategoryTag(final String label, Pageable pageable) {
-//        return blogPostRepository.findBlogPostsWithCategoriesTaggedNative(label, pageable);
-        return blogPostRepository.findBlogPostsWithCategoriesTaggedJPQL(label, pageable);
+        return blogPostRepository.findBlogPostsWithCategoriesTaggedWithLabel(label, pageable);
     }
 
 }
